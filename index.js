@@ -19,7 +19,7 @@ const store = new sessionStore({
 });
 
 // Log environment variables
-const appPort = process.env.APP_PORT || 3000;
+const appPort = process.env.APP_PORT || 37615;
 const sessSecret = process.env.SESS_SECRET || 'default_secret_key';
 const dbHost = process.env.MYSQLHOST;
 const dbPort = process.env.MYSQLPORT;
