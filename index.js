@@ -19,8 +19,11 @@ const store = new sessionStore({
 });
 
 // Log environment variables
-console.log('APP_PORT:', process.env.APP_PORT);
-console.log('SESS_SECRET:', process.env.SESS_SECRET);
+const appPort = process.env.APP_PORT || 3000;
+const sessSecret = process.env.SESS_SECRET || 'default_secret_key';
+
+console.log('APP_PORT:', appPort);
+console.log('SESS_SECRET:', sessSecret);
 
 // Check database connection
 db.authenticate()
@@ -32,7 +35,7 @@ db.authenticate()
   });
 
 app.use(session({
-    secret: `${process.env.SESS_SECRET}`,
+    secret: sessSecret,
     resave: false,
     saveUninitialized: true,
     store: store,
@@ -50,18 +53,11 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
+// Define a route for /dashboard
+app.get('/dashboard', (req, res) => {
+    res.send('Dashboard route');
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-const PORT = process.env.APP_PORT || 37615;
-app.listen(PORT, () => {
-    console.log('Server up and running on port', PORT);
+app.listen(appPort, () => {
+    console.log('Server up and running on port', appPort);
 });
