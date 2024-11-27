@@ -31,7 +31,7 @@ app.use(session({
 
 app.use(cors({
   credentials: true,
-  origin: 'https://rbacbackend-production.up.railway.app/'
+  origin: process.env.CORS_ORIGIN
 }));
 
 app.use(express.json());
@@ -39,6 +39,17 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-app.listen(process.env.APP_PORT, () => {
-    console.log('Server up and running...');
+// Test route to verify database connection
+app.get('/test-db', async (req, res) => {
+  try {
+    await db.authenticate();
+    res.send('Database connection successful');
+  } catch (error) {
+    res.status(500).send('Database connection failed: ' + error.message);
+  }
+});
+
+const PORT = process.env.APP_PORT || 5000; // Default to 5000 if APP_PORT is not set
+app.listen(PORT, () => {
+  console.log(`Server up and running on port ${PORT}...`);
 });
