@@ -63,6 +63,17 @@ app.get('/env', (req, res) => {
   });
 });
 
+// Log environment variables
+console.log('Environment Variables:');
+console.log('APP_PORT:', process.env.APP_PORT);
+console.log('SESS_SECRET:', process.env.SESS_SECRET);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('CORS_ORIGIN:', process.env.CORS_ORIGIN);
+
 const PORT = process.env.APP_PORT || 5000; // Default to 5000 if APP_PORT is not set
 app.listen(PORT, () => {
   console.log(`Server up and running on port ${PORT}...`);
