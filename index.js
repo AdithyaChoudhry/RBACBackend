@@ -8,6 +8,7 @@ import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 
+// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
@@ -17,10 +18,6 @@ const sessionStore = SequelizeStore(session.Store);
 const store = new sessionStore({
   db: db
 });
-
-// (async() => {
-//     await db.sync();
-// })();
 
 app.use(session({
   secret: process.env.SESS_SECRET,
@@ -42,8 +39,7 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-// store.sync();
-
-app.listen(process.env.APP_PORT, () => {
-  console.log(`Server up and running on port ${process.env.APP_PORT}...`);
+const PORT = process.env.APP_PORT;
+app.listen(PORT, () => {
+  console.log(`Server up and running on port ${PORT}...`);
 });

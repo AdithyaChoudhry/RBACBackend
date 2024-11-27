@@ -3,10 +3,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const db = new Sequelize('railway', 'root','JOOkDLKlkONETXbvhHSFbBQQkMsNxTSa', {
-  host: "mysql.railway.internal",
-  port: 33765, // Ensure this matches your MySQL configuration
-  dialect: "mysql"
-});
+const db = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: "mysql"
+  }
+);
 
 export default db;
+
