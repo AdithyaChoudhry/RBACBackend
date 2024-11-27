@@ -1,14 +1,21 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
+// Load environment variables from .env file (if it exists)
 dotenv.config();
 
-// Use DATABASE_URL from Railway, or a fallback for local development
-const DATABASE_URL = process.env.DATABASE_URL
+// Get the DATABASE_URL from environment variables
+const DATABASE_URL = process.env.DATABASE_URL;
 
+if (!DATABASE_URL) {
+    throw new Error("DATABASE_URL is not defined. Please set it in your environment variables.");
+}
+
+// Create a new Sequelize instance using the DATABASE_URL
 const db = new Sequelize(DATABASE_URL, {
     dialect: "mysql",
     dialectOptions: {
+        // Optional: Add any additional options if necessary
     }
 });
 
