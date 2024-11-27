@@ -32,7 +32,7 @@ db.authenticate()
   });
 
 app.use(session({
-    secret: process.env.SESS_SECRET,
+    secret: `${process.env.SESS_SECRET}`,
     resave: false,
     saveUninitialized: true,
     store: store,
@@ -50,6 +50,18 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-app.listen(process.env.APP_PORT, () => {
-    console.log('Server up and running on port', process.env.APP_PORT);
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+const PORT = process.env.APP_PORT || 37615;
+app.listen(PORT, () => {
+    console.log('Server up and running on port', PORT);
 });
