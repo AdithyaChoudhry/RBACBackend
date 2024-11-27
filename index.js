@@ -20,11 +20,11 @@ const store = new sessionStore({
 
 // Log environment variables
 const appPort = process.env.APP_PORT || 37615;
-const sessSecret = process.env.SESS_SECRET || 'default_secret_key';
-const dbHost = process.env.MYSQLHOST;
-const dbPort = process.env.MYSQLPORT;
+const sessSecret = process.env.SESS_SECRET || '2nhsdaesd643n4fmwef75n3rewjewfkj854nefkjdshfkdsjh73nsmfndsk';
+const dbHost = process.env.MYSQLHOST || '127.0.0.1'; // Default to IPv4 localhost
+const dbPort = process.env.MYSQLPORT || 3306;        // Default to 3306
 const dbName = process.env.MYSQL_DATABASE;
-const dbUser = process.env.MYSQLUSER;
+const dbUser  = process.env.MYSQLUSER;
 const dbPassword = process.env.MYSQL_ROOT_PASSWORD;
 
 console.log('APP_PORT:', appPort);
@@ -32,7 +32,7 @@ console.log('SESS_SECRET:', sessSecret);
 console.log('DB_HOST:', dbHost);
 console.log('DB_PORT:', dbPort);
 console.log('DB_NAME:', dbName);
-console.log('DB_USER:', dbUser);
+console.log('DB_USER:', dbUser );
 console.log('DB_PASSWORD:', dbPassword);
 
 // Check database connection
