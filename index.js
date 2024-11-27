@@ -49,6 +49,20 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+// Route to print environment variables
+app.get('/env', (req, res) => {
+  res.json({
+    APP_PORT: process.env.APP_PORT,
+    SESS_SECRET: process.env.SESS_SECRET,
+    DB_NAME: process.env.DB_NAME,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    CORS_ORIGIN: process.env.CORS_ORIGIN
+  });
+});
+
 const PORT = process.env.APP_PORT || 5000; // Default to 5000 if APP_PORT is not set
 app.listen(PORT, () => {
   console.log(`Server up and running on port ${PORT}...`);
