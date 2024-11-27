@@ -15,59 +15,35 @@ const app = express();
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
-    db: db
+  db: db
 });
 
-// Log environment variables
-const appPort = process.env.APP_PORT || 37615;
-const sessSecret = process.env.SESS_SECRET || 'default_secret_key';
-const dbHost = process.env.MYSQLHOST;
-const dbPort = process.env.MYSQLPORT;
-const dbName = process.env.MYSQL_DATABASE;
-const dbUser = process.env.MYSQLUSER;
-const dbPassword = process.env.MYSQL_ROOT_PASSWORD;
-
-console.log('APP_PORT:', appPort);
-console.log('SESS_SECRET:', sessSecret);
-console.log('DB_HOST:', dbHost);
-console.log('DB_PORT:', dbPort);
-console.log('DB_NAME:', dbName);
-console.log('DB_USER:', dbUser);
-console.log('DB_PASSWORD:', dbPassword);
-
-// Check database connection
-db.authenticate()
-  .then(() => {
-    console.log('Database connected...');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+// (async() => {
+//     await db.sync();
+// })();
 
 app.use(session({
-    secret: sessSecret,
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: {
-        secure: 'auto'
-    }
+  secret: process.env.SESS_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: store,
+  cookie: {
+    secure: 'auto'
+  }
 }));
 
 app.use(cors({
-    credentials: true,
-    origin: `https://rbacbackend-production.up.railway.app/`
+  credentials: true,
+  origin: 'https://rbacbackend-production.up.railway.app/'
 }));
+
 app.use(express.json());
 app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-// Define a route for /dashboard
-app.get('/dashboard', (req, res) => {
-    res.send('Dashboard route');
-});
+// store.sync();
 
-app.listen(appPort, () => {
-    console.log('Server up and running on port', appPort);
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Server up and running on port ${process.env.APP_PORT}...`);
 });
