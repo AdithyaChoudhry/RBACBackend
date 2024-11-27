@@ -39,7 +39,6 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-const PORT = process.env.APP_PORT;
-app.listen(PORT, () => {
-  console.log(`Server up and running on port ${PORT}...`);
+app.listen(process.env.APP_PORT, () => {
+    console.log('Server up and running...');
 });
