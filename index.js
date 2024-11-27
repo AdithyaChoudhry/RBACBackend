@@ -7,6 +7,7 @@ import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+
 dotenv.config();
 
 const app = express();
@@ -17,9 +18,18 @@ const store = new sessionStore({
     db: db
 });
 
-//(async() => {
-//     await db.sync();
-//})();
+// Log environment variables
+console.log('APP_PORT:', process.env.APP_PORT);
+console.log('SESS_SECRET:', process.env.SESS_SECRET);
+
+// Check database connection
+db.authenticate()
+  .then(() => {
+    console.log('Database connected...');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 app.use(session({
     secret: process.env.SESS_SECRET,
@@ -40,8 +50,6 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-//store.sync();
-
 app.listen(process.env.APP_PORT, () => {
-    console.log('Server up and running...');
+    console.log('Server up and running on port', process.env.APP_PORT);
 });
