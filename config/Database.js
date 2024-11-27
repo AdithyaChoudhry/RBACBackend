@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Get the DATABASE_URL from environment variables
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = "mysql://root:JOOkDLKlkONETXbvhHSFbBQQkMsNxTSa@mysql.railway.internal:3306/railway";
 
 if (!DATABASE_URL) {
     throw new Error("DATABASE_URL is not defined. Please set it in your environment variables.");
