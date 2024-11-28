@@ -27,13 +27,6 @@ app.use(cors({
   credentials: true // Allow credentials for session cookies
 }));
 
-// Custom CORS Middleware (if needed)
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://majestic-cranachan-153975.netlify.app");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 // Session configuration
 app.use(session({
   secret: process.env.SESS_SECRET,
@@ -51,10 +44,28 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error
+  res.status(500).json({ message: 'Internal Server Error' });
+});
+
 // Handle preflight requests
 app.options('*', cors()); // Enable pre-flight across-the-board
 
-const PORT = process.env.APP_PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server up and running on port ${PORT}...`);
-});
+const PORT = process.env.APP_PORT ;
+
+// Start the server
+const startServer = async () => {
+  try {
+    // Attempt to sync the database
+    await db.sync(); // Ensure the database is connected and synced
+    app.listen(PORT, () => {
+      console.log(`Server up and running on port ${PORT}...`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to the database:', error);
+  }
+};
+
+startServer();
