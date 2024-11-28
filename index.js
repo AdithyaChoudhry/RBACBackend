@@ -8,35 +8,33 @@ import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 
+// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 
-// Initialize Sequelize session store
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
   db: db
 });
 
-// CORS configuration
-app.use(cors({
-  origin: 'https://majestic-cranachan-153975.netlify.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow credentials for session cookies
-}));
-
-// Session configuration
 app.use(session({
   secret: process.env.SESS_SECRET,
   resave: false,
   saveUninitialized: true,
   store: store,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Set to true in production
+    secure: process.env.NODE_ENV === 'production', // Use 'secure' only in production
     sameSite: 'none' // Ensure cookies are sent with cross-site requests
   }
+}));
+
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'https://majestic-cranachan-153975.netlify.app',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true // Allow credentials (cookies, authorization headers)
 }));
 
 app.use(express.json());
@@ -44,28 +42,42 @@ app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack); // Log the error
-  res.status(500).json({ message: 'Internal Server Error' });
+// Test route to verify database connection
+app.get('/test-db', async (req, res) => {
+  try {
+    await db.authenticate();
+    res.send('Database connection successful');
+  } catch (error) {
+    res.status(500).send('Database connection failed: ' + error.message);
+  }
 });
 
-// Handle preflight requests
-app.options('*', cors()); // Enable pre-flight across-the-board
+// Route to print environment variables
+app.get('/env', (req, res) => {
+  res.json({
+    APP_PORT: process.env.APP_PORT,
+    SESS_SECRET: process.env.SESS_SECRET,
+    DB_NAME: process.env.DB_NAME,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    CORS_ORIGIN: process.env.CORS_ORIGIN
+  });
+});
 
-const PORT = process.env.APP_PORT || 5000;
+// Log environment variables
+console.log('Environment Variables:');
+console.log('APP_PORT:', process.env.APP_PORT);
+console.log('SESS_SECRET:', process.env.SESS_SECRET);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('CORS_ORIGIN:', process.env.CORS_ORIGIN);
 
-// Start the server
-const startServer = async () => {
-  try {
-    // Attempt to sync the database
-    await db.sync(); // Ensure the database is connected and synced
-    app.listen(PORT, () => {
-      console.log(`Server up and running on port ${PORT}...`);
-    });
-  } catch (error) {
-    console.error('Failed to connect to the database:', error);
-  }
-};
-
-startServer();
+const PORT = process.env.APP_PORT || 5000; // Default to 5000 if APP_PORT is not set
+app.listen(PORT, () => {
+  console.log(`Server up and running on port ${PORT}...`);
+});
