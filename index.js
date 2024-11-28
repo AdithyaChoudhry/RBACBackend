@@ -25,13 +25,16 @@ app.use(session({
   saveUninitialized: true,
   store: store,
   cookie: {
-    secure: 'auto'
+    secure: process.env.NODE_ENV === 'production', // Use 'secure' only in production
+    sameSite: 'none' // Ensure cookies are sent with cross-site requests
   }
 }));
 
 app.use(cors({
-  credentials: true,
-  origin: 'https://majestic-cranachan-153975.netlify.app'
+  origin: process.env.CORS_ORIGIN || 'https://majestic-cranachan-153975.netlify.app',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true // Allow credentials (cookies, authorization headers)
 }));
 
 app.use(express.json());
