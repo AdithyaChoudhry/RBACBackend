@@ -12,26 +12,36 @@ dotenv.config();
 
 const app = express();
 
+// Initialize Sequelize session store
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
   db: db
 });
 
+// CORS configuration
 app.use(cors({
   origin: 'https://majestic-cranachan-153975.netlify.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow credentials
+  credentials: true // Allow credentials for session cookies
 }));
 
+// Custom CORS Middleware (if needed)
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://majestic-cranachan-153975.netlify.app");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+// Session configuration
 app.use(session({
   secret: process.env.SESS_SECRET,
   resave: false,
   saveUninitialized: true,
   store: store,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production', // Set to true in production
     sameSite: 'none' // Ensure cookies are sent with cross-site requests
   }
 }));
