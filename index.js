@@ -31,7 +31,7 @@ app.use(session({
 
 app.use(cors({
   credentials: true,
-  origin: 'https://majestic-cranachan-153975.netlify.app/'
+  origin: 'https://majestic-cranachan-153975.netlify.app'
 }));
 
 app.use(express.json());
