@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
 // Handle preflight requests
 app.options('*', cors()); // Enable pre-flight across-the-board
 
-const PORT = process.env.APP_PORT ;
+const PORT = process.env.APP_PORT || 5000;
 
 // Start the server
 const startServer = async () => {
